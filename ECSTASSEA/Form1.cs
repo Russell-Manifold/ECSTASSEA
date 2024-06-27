@@ -6,8 +6,8 @@ namespace ECSTASSEA
     public partial class Form1 : Form
     {
 
-        private string Serno = "DK198110007";
-        private string Authcde = "5635796";
+        private string Serno = "";
+        private string Authcde = "";
         private PasSDK.PastelPartnerSDK SDK = new PasSDK.PastelPartnerSDK();
         private string StrReturn;
 
@@ -22,13 +22,33 @@ namespace ECSTASSEA
             if (txtDataPath.Text.ToString().Trim().Length < 1)
             {
                 MessageBox.Show("No data path entered");
+                return;
             }
-            SDK.SetLicense(Serno, Authcde);
-           
-            StrReturn = SDK.SetDataPath(txtDataPath.Text);
-            if (StrReturn.StartsWith("0"))
+            if (txtSerNum.Text.ToString().Trim().Length < 1)
             {
-                MessageBox.Show(GetResultDesc(StrReturn.Split('|')[0]));
+                MessageBox.Show("No SDK Serial No  entered");
+                return;
+            }
+            if (txtAuthCode.Text.ToString().Trim().Length < 1)
+            {
+                MessageBox.Show("No SDK Auth Code entered");
+                return;
+            }
+            Serno = txtSerNum.Text;
+            Authcde = txtAuthCode.Text;
+
+           SDK.SetLicense(Serno, Authcde);
+            try
+            {
+                StrReturn = SDK.SetDataPath(txtDataPath.Text);
+                if (StrReturn.StartsWith("0"))
+                {
+                    MessageBox.Show(GetResultDesc(StrReturn.Split('|')[0]));
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
             }
         }
 
